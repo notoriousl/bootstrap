@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produce Bill</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-group">
+        <label for="brand">Select Brand:</label>
+        <select id="brand" class="form-control">
+            <option value="HP" data-price="0">HP</option>
+            <option value="Nokia" data-price="0">Nokia</option>
+            <option value="Samsung" data-price="0">Samsung</option>
+            <option value="Motorola" data-price="0">Motorola</option>
+            <option value="Apple" data-price="0">Apple</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Select Product:</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="mobile" data-price="5000">
+            <label class="form-check-label" for="mobile">Mobile</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="laptop" data-price="30000">
+            <label class="form-check-label" for="laptop">Laptop</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" class="form-control" value="1">
+    </div>
+    <button id="produce-bill" class="btn btn-primary">Produce Bill</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Assign prices to brands (just an example, prices can be anything)
+        $('#brand option').each(function() {
+            switch ($(this).val()) {
+                case 'HP':
+                    $(this).attr('data-price', '2000');
+                    break;
+                case 'Nokia':
+                    $(this).attr('data-price', '1500');
+                    break;
+                case 'Samsung':
+                    $(this).attr('data-price', '3000');
+                    break;
+                case 'Motorola':
+                    $(this).attr('data-price', '2500');
+                    break;
+                case 'Apple':
+                    $(this).attr('data-price', '4000');
+                    break;
+            }
+        });
+
+        $('#produce-bill').click(function() {
+            var brandPrice = parseFloat($('#brand option:selected').attr('data-price'));
+            var productPrice = 0;
+            var quantity = parseInt($('#quantity').val());
+
+            if ($('#mobile').is(':checked')) {
+                productPrice += parseFloat($('#mobile').attr('data-price'));
+            }
+            if ($('#laptop').is(':checked')) {
+                productPrice += parseFloat($('#laptop').attr('data-price'));
+            }
+
+            var totalAmount = (brandPrice + productPrice) * quantity;
+
+            if (isNaN(totalAmount) || totalAmount < 0) {
+                alert('Invalid input');
+            } else {
+                alert('Total Amount: ₹' + totalAmount);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
