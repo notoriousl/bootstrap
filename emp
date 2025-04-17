@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee CRUD App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f2f2f2;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .form-container, .table-container {
+      max-width: 700px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .action-btn {
+      margin-right: 10px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background-color: #28a745;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Employee Management (CRUD)</h2>
+
+  <div class="form-container">
+    <h4 id="formTitle">Add New Employee</h4>
+    <label>Name:</label>
+    <input type="text" id="name" />
+
+    <label>Position:</label>
+    <input type="text" id="position" />
+
+    <label>Salary:</label>
+    <input type="number" id="salary" />
+
+    <button onclick="saveEmployee()">Save</button>
+  </div>
+
+  <div class="table-container">
+    <h4>Employee List</h4>
+    <table id="employeeTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Salary</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Employee data will go here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    let employees = JSON.parse(localStorage.getItem("employees")) || [];
+    let editIndex = -1;
+
+    function saveEmployee() {
+      const name = document.getElementById("name").value;
+      const position = document.getElementById("position").value;
+      const salary = document.getElementById("salary").value;
+
+      if (!name || !position || !salary) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      const emp = { name, position, salary };
+
+      if (editIndex === -1) {
+        employees.push(emp);
+      } else {
+        employees[editIndex] = emp;
+        editIndex = -1;
+        document.getElementById("formTitle").innerText = "Add New Employee";
+      }
+
+      localStorage.setItem("employees", JSON.stringify(employees));
+      displayEmployees();
+      clearForm();
+    }
+
+    function displayEmployees() {
+      const tbody = document.querySelector("#employeeTable tbody");
+      tbody.innerHTML = "";
+
+      employees.forEach((emp, index) => {
+        const row = `<tr>
+          <td>${emp.name}</td>
+          <td>${emp.position}</td>
+          <td>${emp.salary}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editEmployee(${index})">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteEmployee(${index})">Delete</button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function editEmployee(index) {
+      const emp = employees[index];
+      document.getElementById("name").value = emp.name;
+      document.getElementById("position").value = emp.position;
+      document.getElementById("salary").value = emp.salary;
+      editIndex = index;
+      document.getElementById("formTitle").innerText = "Edit Employee";
+    }
+
+    function deleteEmployee(index) {
+      if (confirm("Are you sure to delete this employee?")) {
+        employees.splice(index, 1);
+        localStorage.setItem("employees", JSON.stringify(employees));
+        displayEmployees();
+      }
+    }
+
+    function clearForm() {
+      document.getElementById("name").value = "";
+      document.getElementById("position").value = "";
+      document.getElementById("salary").value = "";
+    }
+
+    // Initial load
+    displayEmployees();
+  </script>
+
+</body>
+</html>
